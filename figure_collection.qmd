@@ -1,0 +1,64 @@
+---
+title: "Switch Collection"
+format: html
+editor: visual
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(ggbeeswarm)
+
+data_raw <- read.csv("~/Documents/collection_figure/collection.csv")
+
+data<-data_raw%>%
+  mutate(
+    cat=case_when(
+      cat==1~"Nintendo",
+      cat==2~"Other big releases",
+      cat==3~"Indie",
+      cat==4~"Retro"
+    )%>%
+      factor(levels = c(
+        "Nintendo",
+        "Other big releases",
+        "Indie",
+        "Retro"
+        ))
+  )%>%
+  group_by(cat,rating)%>%
+  mutate(
+    rat=case_when(
+      n()<4~rating,
+      n()<10~rating+sample(c(-0.05,0.05),n(),replace=T),
+      TRUE~rating+sample(c(-0.1,0,0,0.1),n(),replace=T)
+    )
+    )%>%
+  ungroup()
+
+labels=c(
+  "All time favourite",
+  "Fantastic",
+  "Fun",
+  "Not my thing",
+  "I have a deep personal grudge against this videogame",
+  "Still need to play (more)"
+)
+```
+
+```{r}
+fig<-(
+  data%>%
+    ggplot(aes(x=cat,y=-rat,key=Name))+
+      geom_beeswarm()
+    )%>%
+  ggplotly(tooltip="key",showlegend=FALSE)
+
+fig$x$data[[1]]$text<-stringr::str_remove(
+  fig$x$data[[1]]$text,
+  "Name: "
+)
+fig
+```
+
