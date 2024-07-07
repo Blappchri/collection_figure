@@ -1,10 +1,12 @@
 ---
-title: "Switch Collection"
-format: html
+title: "My 101 Games for the Nintendo Switch - An Interactive Visualization"
+format: 
+  html:
+    backgroundcolor: '#FFF8DC'
 editor: visual
 ---
 
-```{r}
+```{r,include=FALSE}
 library(ggplot2)
 library(dplyr)
 library(plotly)
@@ -16,13 +18,13 @@ data<-data_raw%>%
   mutate(
     cat=case_when(
       cat==1~"Nintendo",
-      cat==2~"Other big releases",
+      cat==2~"Other Big\nStudios",
       cat==3~"Indie",
       cat==4~"Retro"
     )%>%
       factor(levels = c(
         "Nintendo",
-        "Other big releases",
+        "Other Big\nStudios",
         "Indie",
         "Retro"
         ))
@@ -38,20 +40,30 @@ data<-data_raw%>%
   ungroup()
 
 labels=c(
-  "All time favourite",
+  "All-Time-Favorite",
   "Fantastic",
-  "Fun",
+  "Pretty good",
   "Not my thing",
-  "I have a deep personal grudge against this videogame",
-  "Still need to play (more)"
+  "I have a deep\npersonal grudge against\nthis videogame",
+  "Can't judge yet"
 )
 ```
 
-```{r}
+```{r,echo=FALSE}
 fig<-(
   data%>%
     ggplot(aes(x=cat,y=-rat,key=Name))+
-      geom_beeswarm()
+      geom_beeswarm(col="deeppink3",shape=15)+
+      theme_minimal()+
+      scale_y_continuous("",breaks = -(1:6),labels = labels)+
+      scale_x_discrete("")+
+      geom_hline(yintercept=-5.5,col="black")+
+    theme(
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill="cornsilk"),
+      panel.background = element_rect(fill = NA),
+      panel.grid.major.y = element_line(color="cornsilk3")
+      )
     )%>%
   ggplotly(tooltip="key",showlegend=FALSE)
 
