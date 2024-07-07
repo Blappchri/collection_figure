@@ -1,5 +1,6 @@
 ---
 title: "My 101 Games for the Nintendo Switch - An Interactive Visualization"
+author: Christoph Blapp
 format: 
   html:
     backgroundcolor: '#FFF8DC'
@@ -53,7 +54,7 @@ labels=c(
 fig<-(
   data%>%
     ggplot(aes(x=cat,y=-rat,key=Name))+
-      geom_beeswarm(col="deeppink3",shape=15)+
+      geom_beeswarm(col="deeppink3",shape=15,cex=2)+
       theme_minimal()+
       scale_y_continuous("",breaks = -(1:6),labels = labels)+
       scale_x_discrete("")+
